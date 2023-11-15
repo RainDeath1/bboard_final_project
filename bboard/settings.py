@@ -140,3 +140,6 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'main.AdvUser'
+
+
+EMAIL_PORT =1025

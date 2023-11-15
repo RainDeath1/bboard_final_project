@@ -1,0 +1,10 @@
+{% extends 'layout/basic.html' %}
+
+{% block title %} Ошибка|Активация не выполнена {% endblock %}
+
+{% block content%}
+    <h2>Ошибка при активации</h2>
+
+    <p>При активации пользователя произошла ошибка.</p>
+    <p><a href="{% url 'main:register' %}">Войти на сайт</a></p>
+{% endblock %}

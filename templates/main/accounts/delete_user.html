@@ -1,0 +1,14 @@
+{% extends 'layout/basic.html' %}
+{% load bootstrap4 %}
+
+{% block title %} Удаление пользователя {% endblock %}
+
+{% block content%}
+    <h2>Удаление пользователя {{ object.username }}</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        {#{% buttons  submit='Удалить' %} {% endbuttons %}#}
+        {% bootstrap_button "Удалить" button_type="submit" button_class="btn-danger" %}
+    </form>
+{% endblock %}
