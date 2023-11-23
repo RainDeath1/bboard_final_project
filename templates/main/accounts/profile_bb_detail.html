@@ -1,0 +1,35 @@
+{% extends "layout/basic.html" %}
+
+{% block title %}Детали объявления{% endblock %}
+
+{% block content %}
+    <div class="container mt-3">
+        <h2>{{ bbs.title }}</h2>
+        <p>{{ bbs.content }}</p>
+        <p class="font-weight-bold">{{ bbs.price }} руб.</p>
+        <p>{{ bbs.contacts }}</p>
+        <p class="text-right font-italic">Добавлено: {{ bbs.created_at }}</p>
+
+        {% if bbs.image %}
+            <div class="mt-3">
+                <img src="{{ bbs.image.url }}" alt="{{ bbs.title }}" class="img-fluid">
+            </div>
+        {% endif %}
+
+        {% if bbs.additional_images.all %}
+            <div class="d-flex flex-wrap my-4">
+                {% for additional_image in bbs.additional_images.all %}
+                    <div class="mr-3 mb-3">
+                        <img src="{{ additional_image.image.url }}" alt="{{ bbs.title }}" class="additional-image">
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <p>
+            <a href="{% url 'main:profile_bb_change' pk=bbs.pk %}">Редактировать</a>
+            <a href="{% url 'main:profile_bb_delete' pk=bbs.pk %}">Удалить</a>
+            <a href="{% url 'main:profile' %}">Назад к профилю</a>
+        </p>
+    </div>
+{% endblock %}

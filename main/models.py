@@ -6,12 +6,12 @@ from .utilities import get_timestamp_path
 
 class AdvUser(AbstractUser):
     is_activated = models.BooleanField(default=True, db_index=True,
-                                       verbose_name='Прошел активацию?')
+                                       verbose_name='Прошёл активацию?')
     send_messages = models.BooleanField(default=True,
-                                        verbose_name='Слать оповещение о новых комментариях?')
+                                        verbose_name='Слать оповещения о новых комментариях?')
 
     def delete(self, *args, **kwargs):
-        for bb in self.bb_set_all():
+        for bb in self.bb_set.all():
             bb.delete()
         super().delete(*args, **kwargs)
 
@@ -21,10 +21,10 @@ class AdvUser(AbstractUser):
 
 class Rubric(models.Model):
     name = models.CharField(max_length=20, db_index=True, unique=True,
-                            verbose_name='Название Рубрики')
+                            verbose_name='Название')
     order = models.SmallIntegerField(default=0, db_index=True, verbose_name='Порядок')
-    super_rubric = models.ForeignKey('SuperRubric', on_delete=models.PROTECT,
-                                     null=True, blank=True, verbose_name='Надрубрика')
+    super_rubric = models.ForeignKey('SuperRubric', on_delete=models.PROTECT, null=True,
+                                     blank=True, verbose_name='Надрубрика')
 
 
 class SuperRubricManager(models.Manager):
@@ -68,15 +68,14 @@ class Bb(models.Model):
                                verbose_name='Рубрика')
     title = models.CharField(max_length=40, verbose_name='Товар')
     content = models.TextField(verbose_name='Описание')
-    price = models.DecimalField(default=0, verbose_name='Цена',
-                                max_digits=7, decimal_places=2)
+    price = models.FloatField(default=0, verbose_name='Цена')
     contacts = models.TextField(verbose_name='Контакты')
     image = models.ImageField(blank=True, upload_to=get_timestamp_path,
-                              verbose_name='Изображение товара')
+                              verbose_name='Изображение')
     author = models.ForeignKey(AdvUser, on_delete=models.CASCADE,
                                verbose_name='Автор объявления')
     is_active = models.BooleanField(default=True, db_index=True,
-                                    verbose_name='Выводить в списке объявлений?')
+                                    verbose_name='Выводить в списке?')
     created_at = models.DateTimeField(auto_now_add=True, db_index=True,
                                       verbose_name='Опубликовано')
 
@@ -98,11 +97,27 @@ class AdditionalImage(models.Model):
     bb = models.ForeignKey(Bb, on_delete=models.CASCADE,
                            verbose_name='Объявление')
     image = models.ImageField(upload_to=get_timestamp_path,
-                              verbose_name='Изщбражение')
+                              verbose_name='Изображение')
 
     def __str__(self):
         return f'{self.bb.title}'
 
     class Meta:
         verbose_name_plural = 'Дополнительные иллюстрации'
-        verbose_name = 'Дополнительные иллюстрация'
+        verbose_name = 'Дополнительная иллюстрация'
+
+
+class Comment(models.Model):
+    bb = models.ForeignKey(Bb, on_delete=models.CASCADE,
+                           verbose_name='Объявление')
+    author = models.CharField(max_length=30, verbose_name='Автор')
+    content = models.TextField(verbose_name='Содержание')
+    is_active = models.BooleanField(default=True, db_index=True,
+                                    verbose_name='Выводить на экран?')
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True,
+                                      verbose_name='Опубликован')
+
+    class Meta:
+        verbose_name_plural = 'Комментарии'
+        verbose_name = 'Комментарий'
+        ordering = ['created_at']
